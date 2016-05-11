@@ -2,9 +2,11 @@
 #include <vector>
 #include <algorithm>
 
+#include <problem.h>
+
 using namespace std;
 
-int main( char** argv, int argc ) {
+int main( int argc, char** argv ) {
   cout << "Hello optimization" << endl;
   return 0;
 }
