@@ -5,7 +5,7 @@
 
 template <size_t Dimension, typename Value = double>
 class Optimizer {
-  virtual Vector<Dimension,Value> optimize( Problem<Dimension,Value> problem ) = 0;  
+  virtual Vector<Dimension, Value> optimize(Problem<Dimension, Value> problem) = 0;
 };
 
 #endif
