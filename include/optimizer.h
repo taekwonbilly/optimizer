@@ -8,6 +8,4 @@ class Optimizer {
   virtual Vector<Dimension,Value> optimize( Problem<Dimension,Value> problem ) = 0;  
 };
 
-class GradientDescent : 
-
 #endif
