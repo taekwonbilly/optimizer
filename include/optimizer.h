@@ -5,8 +5,9 @@
 
 template <size_t Dimension, typename Value = double>
 class Optimizer {
-  virtual Value (&optimize( Problem<Dimension,Value> problem ))[Dimension] = 0;  
+  virtual Vector<Dimension,Value> optimize( Problem<Dimension,Value> problem ) = 0;  
 };
 
+class GradientDescent : 
 
 #endif
