@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include <problem.h>
+#include <optimizer.h>
 
 using namespace std;
 
