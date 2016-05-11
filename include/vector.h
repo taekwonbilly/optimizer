@@ -11,6 +11,8 @@ class Vector {
     }
     return *this;
   }
+  
+  inline Value& operator[](const size_t idx){ return _data[idx]; }
 
   inline Vector<Dimension, Value>& operator -=(const Vector &v2) {
     for (size_t i = 0; i < Dimension; i++) {
