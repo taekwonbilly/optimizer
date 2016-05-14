@@ -18,6 +18,11 @@ public:
           const std::function<Vector<Dimension, Value> (Vector<Dimension, Value>)> &gradient)
     : _bounds(bounds), _function(function), _gradient(gradient) {
   }
+  Problem(const Bounds<Dimension, Value> &&bounds,
+          const std::function<Value (Vector<Dimension, Value>)> &function,
+          const std::function<Vector<Dimension, Value> (Vector<Dimension, Value>)> &gradient)
+    : _bounds(bounds), _function(function), _gradient(gradient) {
+  }
 };
 
 #endif

@@ -10,8 +10,13 @@ class Bounds {
 
 public:
   //! Constructor for Bounds class that checks if a Vector is in a valid range.
-  Bounds(Vector<Dimension, Value> &minimum,
-         Vector<Dimension, Value> &maximum)
+  Bounds(const Vector<Dimension, Value> &minimum,
+         const Vector<Dimension, Value> &maximum)
+    : _minimum(minimum), _maximum(maximum) {
+  }
+
+  Bounds(const Vector<Dimension, Value> &&minimum,
+         const Vector<Dimension, Value> &&maximum)
     : _minimum(minimum), _maximum(maximum) {
   }
 
@@ -22,6 +27,14 @@ public:
     }
     return true;
   };
+  inline Vector<Dimension,Value> randomPoint() const { 
+    Value vals[Dimension];
+    for( size_t i=0; i<Dimension; i++ ) {
+      double d = (double)rand() / RAND_MAX;
+      vals[i] = _minimum[i] + d * (_maximum[i] - _minimum[i]);
+    }
+    return Vector<Dimension,Value>( vals );
+  }
 };
 
 #endif

@@ -9,7 +9,7 @@ using namespace std;
 
 //! Runs all of the optimizations on a test case and prints the result.
 template <size_t Dimension, typename Value = double>
-void run_opts(Problem<Dimension, Value> problem) {
+void run_opts(const Problem<Dimension, Value> &problem) {
 
   // The optimization methods.
   Optimizer<Dimension, Value> *opts[] = {
@@ -18,7 +18,7 @@ void run_opts(Problem<Dimension, Value> problem) {
     new SimulatedAnnealing<Dimension, Value>(),
     new NewtonsMethod<Dimension, Value>(),
     new InteriorPointsMethod<Dimension, Value>(),
-    new RandomGuessing<Dimension, Value>(),
+    new RandomGuessing<Dimension, Value>(1000),
   };
 
   // Performs each optimization in the listed optimization methods.
@@ -33,10 +33,8 @@ int main (int argc, char** argv) {
   // Testing setup.
   #define test_dimension 3
   #define test_value double
-  double z[3] = {0.0, 0.0, 0.0};
-  double ones[3] = {1.0, 1.0, 1.0};
   //Vector<test_dimension, test_value> v(a);
-  auto test_bounds = new Bounds<test_dimension, test_value>(Vector<test_dimension, test_value>(z), Vector<test_dimension, test_value>(ones));
+  Bounds<test_dimension, test_value> test_bounds( Vector<>({0.0, 0.0, 0.0}), Vector<>({1.0, 1.0, 1.0}) );
   auto test_function = [](Vector<test_dimension, test_value> v) -> test_value {
     return (v[0] - 0.3) * (v[0] - 0.3) + 3 * (v[1] - 0.5) * (v[1] - 0.5) + 3 * (v[2] - 0.7) * (v[2] - 0.7);
   };
@@ -45,6 +43,7 @@ int main (int argc, char** argv) {
   };
 
   // Runs the test case specified.
-  run_opts(new Problem<3, double>(test_bounds, test_function, test_gradient))
+  Problem<3, double> problem(test_bounds, test_function, test_gradient);
+  run_opts(problem);
   return 0;
 }
