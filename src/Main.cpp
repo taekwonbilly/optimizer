@@ -18,7 +18,9 @@ void run_opts(const Problem<Dimension, Value> &problem) {
     new SimulatedAnnealing<Dimension, Value>(),
     new NewtonsMethod<Dimension, Value>(),
     new InteriorPointsMethod<Dimension, Value>(),
+    new RandomGuessing<Dimension, Value>(100),
     new RandomGuessing<Dimension, Value>(1000),
+    new RandomGuessing<Dimension, Value>(10000),
   };
 
   // Performs each optimization in the listed optimization methods.
