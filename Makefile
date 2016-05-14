@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := all
 
 FLAGS_LIB = ${LDFLAGS} #-lmpfr -lgmp
-FLAGS_INC = ${CPPFLAGS} ${CFLAGS} -I./include
+FLAGS_INC = ${CPPFLAGS} ${CFLAGS} -I./include -I/usr/include/eigen3 
 #FLAGS = -lmpfr -lgmp ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -fexceptions
 
 ifeq ($(CXX),)
