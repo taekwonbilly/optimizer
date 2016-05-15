@@ -1,6 +1,7 @@
 #ifndef _OPTIMIZER_H_
 #define _OPTIMIZER_H_
 
+#include <bounds.h>
 #include <problem.h>
 #include <string>
 
@@ -14,6 +15,7 @@ public:
 
 template <size_t Dimension, typename Value = double>
 class MultiplePointRestartAcceleratedGradientDescent: public Optimizer<Dimension, Value> {
+public:
   size_t _count;
   size_t _numRepetitions;
 public:
@@ -48,7 +50,9 @@ public:
   }
 
   std::string getName() const {
-    return "Stochastic Gradient Descent";
+    char buffer[512];
+    sprintf(buffer, "MultiplePointRestartAcceleratedGradientDescent[count=%d, numIterations=%d]", _count, _numRepetitions);
+    return buffer;
   }
 };
 
@@ -63,20 +67,40 @@ public:
   }
 
   std::string getName() const {
-    return "Gradient Descent";
+    char buffer[512];
+    sprintf(buffer, "GradientDescent[numIterations=%d]", _mpragd._numRepetitions);
+    return buffer;
   }
 };
 
 template <size_t Dimension, typename Value = double>
 class SimulatedAnnealing: public Optimizer<Dimension, Value> {
+ double _temp, _cooling, _ftemp;
 public:
-
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final{
-    return problem.bounds().randomPoint();
+  SimulatedAnnealing( double temp, double cooling, double ftemp ) : _temp(temp), _cooling(cooling), _ftemp(ftemp) { }
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
+    auto val = problem.bounds().randomPoint();
+    for( double temp = _temp; temp > _ftemp; temp *= (1 - _cooling) ) {
+      size_t axis = randInt( Dimension );
+      auto val2 = problem.bounds().randomPoint();
+      for( size_t i=0; i<Dimension; i++ ) if( i != axis ) val2[i] = val[i];
+      double v2 = problem.function(val2), v1 = problem.function(val);
+      double tmp = exp( -(v2-v1)/temp);
+      if( tmp >= 1 ) { val = val2; continue; }
+      double rd = randDouble();
+//      if( tmp <= 1.0 ) {
+//         printf("bad=%f, v2=%f v1=%f rd=%f temp=%f\n", tmp, v2, v1, rd, temp);
+//      }
+      assert( tmp <= 1.0 );
+      if( rd < tmp ) { val = val2; }
+    }
+    return val;
   }
 
   std::string getName() const {
-    return "Simulated Annealing";
+    char buffer[512];
+    sprintf(buffer, "Simulated Annealing[temp=%f,cooling=%f,ftemp=%f]", _temp, _cooling, _ftemp);
+    return buffer;
   }
 };
 
@@ -134,7 +158,9 @@ public:
   }
 
   std::string getName() const {
-    return "Random Guessing";
+    char buffer[512];
+    sprintf(buffer, "Random Guessing[count=%u]", _count);
+    return buffer;
   }
 };
 
