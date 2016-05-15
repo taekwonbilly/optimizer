@@ -13,6 +13,7 @@ public:
 
 template <size_t Dimension, typename Value = double>
 class GradientDescent: public Optimizer<Dimension, Value> {
+  size_t numRepetitions;
 public:
   GradientDescent( size_t numRepetitions ) : _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
@@ -26,6 +27,8 @@ public:
 
 template <size_t Dimension, typename Value = double>
 class StochasticGradientDescent: public Optimizer<Dimension, Value> {
+  size_t count;
+  size_t numRepetitions;
 public:
   StochasticGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
@@ -64,6 +67,8 @@ public:
 
 template <size_t Dimension, typename Value = double>
 class NewtonsMethod: public Optimizer<Dimension, Value> {
+  size_t count;
+  size_t numRepetitions;
 public:
   NewtonsMethod( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
