@@ -78,7 +78,7 @@ public:
     for (size_t i = 0; i < _count; i++) {
       auto newVal = problem.bounds().randomPoint();
       for (size_t j = 0; j < _numRepetitions; j++) {
-        newVal -= problem.function(newVal) / problem.gradient(newVal);
+        newVal -= problem.ihessian(newVal) * problem.gradient(newVal);
       }
       if (problem.function(newVal) < problem.function(returnVal)) {
         returnVal = newVal;
