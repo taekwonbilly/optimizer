@@ -70,9 +70,13 @@ int main (int argc, char** argv) {
   auto test_hessian = [](Vector<test_dimension, test_value> v) -> SquareMatrix<test_dimension, test_value> {
     return {{2, 0, 0}, {0, 6, 0}, {0, 0, 6}};
   };
+  auto test_ihessian = [](Vector<test_dimension, test_value> v) -> SquareMatrix<test_dimension, test_value> {
+    return {{0.5, 0, 0}, {0, 0.16666666666666666, 0}, {0, 0, \
+0.16666666666666666}};
+  };
 
   // Runs the test case specified.
-  Problem<3, double> problem(test_bounds, test_function, test_gradient, test_hessian);
+  Problem<3, double> problem(test_bounds, test_function, test_gradient, test_hessian, test_ihessian);
   run_opts(problem);
   return 0;
 }
