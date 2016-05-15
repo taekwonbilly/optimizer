@@ -26,7 +26,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
   // Performs each optimization in the listed optimization methods.
   for (auto &opt : opts) {
     auto solution = opt->optimize(problem);
-    cout << opt->getName() << " " << problem._function(solution) << endl;
+    cout << opt->getName() << " " << problem.function(solution) << " at " << solution << endl;
   }
 }
 
