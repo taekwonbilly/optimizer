@@ -11,19 +11,6 @@ public:
   virtual std::string getName() const = 0;
 };
 
-template <size_t Dimension, typename Value = double>
-class GradientDescent: public Optimizer<Dimension, Value> {
-  size_t _numRepetitions;
-public:
-  GradientDescent( size_t numRepetitions ) : _numRepetitions(numRepetitions) { }
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return new StochasticGradientDescent<Dimension, Value>(1, _numRepetitions)->optimize(problem)
-  }
-
-  std::string getName() const {
-    return "Gradient Descent";
-  }
-};
 
 template <size_t Dimension, typename Value = double>
 class StochasticGradientDescent: public Optimizer<Dimension, Value> {
@@ -38,7 +25,7 @@ public:
       for (size_t j = 0; j < _numRepetitions; j++) {
         // TODO: Find the optimal step-size.
         auto stepSize = 1;
-        newVal = newVal - stepSize * problem._gradient(newVal);
+        newVal -= stepSize * problem._gradient(newVal);
       }
       if (problem._function(newVal) < problem._function(returnVal)) {
         returnVal = newVal;
@@ -49,6 +36,21 @@ public:
 
   std::string getName() const {
     return "Stochastic Gradient Descent";
+  }
+};
+
+template <size_t Dimension, typename Value = double>
+class GradientDescent: public Optimizer<Dimension, Value> {
+//  size_t _numRepetitions;
+  StochasticGradientDescent<Dimension, Value> _sgd;
+public:
+  GradientDescent( size_t numRepetitions ) : _sgd(1, numRepetitions) { }
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
+    return _sgd.optimize(problem);
+  }
+
+  std::string getName() const {
+    return "Gradient Descent";
   }
 };
 
@@ -76,7 +78,7 @@ public:
     for (size_t i = 0; i < _count; i++) {
       auto newVal = problem._bounds.randomPoint();
       for (size_t j = 0; j < _numRepetitions; j++) {
-        newVal = newVal - problem._function(newVal) / problem._gradient(newVal);
+        newVal -= problem._function(newVal) / problem._gradient(newVal);
       }
       if (problem._function(newVal) < problem._function(returnVal)) {
         returnVal = newVal;
