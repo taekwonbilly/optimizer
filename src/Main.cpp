@@ -38,7 +38,6 @@ void run_opts(const Problem<Dimension, Value> &problem) {
     new SimulatedAnnealing<Dimension, Value>(1000, .001, .001),
     new SimulatedAnnealing<Dimension, Value>(1000, .0001, .001),
     new NewtonsMethod<Dimension, Value>(1, 10),
-    new InteriorPointsMethod<Dimension, Value>(),
     new RandomGuessing<Dimension, Value>(100),
     new RandomGuessing<Dimension, Value>(1000),
     new RandomGuessing<Dimension, Value>(10000),
