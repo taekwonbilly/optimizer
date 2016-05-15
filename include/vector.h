@@ -7,6 +7,10 @@
 template <size_t Dimension=3, typename Value = double>
 class Vector : public Eigen::Matrix<Value,Dimension,1> {
 public:
+  Vector( const Eigen::Matrix<double,Dimension,1>& sup ) : Eigen::Matrix<double,Dimension,1>( sup ) { }
+
+  template< typename T>
+  const Vector& operator=( const T& op ){ Eigen::Matrix<double,Dimension,1>::operator=(op); return *this; }
   Vector( std::initializer_list<Value> vals ) : Eigen::Matrix<Value,Dimension,1>(Dimension) {
     assert( vals.size() == Dimension );//, "need length of init list to equal dimension" );
     size_t i = 0;
@@ -27,7 +31,7 @@ public:
   SquareMatrix( std::initializer_list<std::initializer_list<Value>> vals ) : Eigen::Matrix<Value,Dimension,Dimension>(Dimension,Dimension) {
     assert( vals.size() == Dimension );//, "need length of init list to equal dimension" );
     size_t i = 0;
-    for( auto& a : vals ) { 
+    for( auto& a : vals ) {
       size_t j = 0;
       assert( a.size() == Dimension );
       for( auto& b : a ) { (*this)(i,j) = b; j++; }

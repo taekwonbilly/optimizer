@@ -20,13 +20,13 @@ public:
   MultiplePointRestartAcceleratedGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     auto bestX = problem.bounds().randomPoint();
-    for (size_t i = 0; i < count; i++) {
+    for (size_t i = 0; i < _count; i++) {
       auto x = problem.bounds().randomPoint();
       auto y = x;
-      auto t = 1;
+      double t = 1;
       auto prevX = x;
       auto prevY = y;
-      auto prevT = t;
+      double prevT = t;
       for (size_t i = 0; i < _numRepetitions; i++) {
         prevX = x;
         prevY = y;
@@ -34,11 +34,12 @@ public:
         x = prevY - .01 * problem.gradient(prevY);
         t = 0.5 * prevT * (-prevT + sqrt(4 + prevT * prevT));
         y = x + (prevT * (1 - prevT) / (prevT * prevT + t)) * (x - prevX);
-        if problem.gradient(prevY) * (x - prevX).transpose() > 0 {
+        Eigen::Matrix<Value, 1, 1> tmp = (x - prevX).transpose() * problem.gradient(prevY) ;
+        if ( tmp(0,0) > 0) {
           t = 1;
         }
       }
-      if problem.function(x) < problem.function(bestX) {
+      if (problem.function(x) < problem.function(bestX)) {
         bestX = x;
       }
     }
@@ -56,7 +57,7 @@ class GradientDescent: public Optimizer<Dimension, Value> {
 //  size_t _numRepetitions;
   MultiplePointRestartAcceleratedGradientDescent<Dimension, Value> _mpragd;
 public:
-  GradientDescent( size_t numRepetitions ) : _sgd(1, numRepetitions) { }
+  GradientDescent( size_t numRepetitions ) : _mpragd(1, numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     return _mpragd.optimize(problem);
   }
