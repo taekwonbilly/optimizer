@@ -18,16 +18,16 @@ class StochasticGradientDescent: public Optimizer<Dimension, Value> {
   size_t _numRepetitions;
 public:
   StochasticGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    auto returnVal = problem._bounds.randomPoint();
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
+    auto returnVal = problem.bounds().randomPoint();
     for (size_t i = 0; i < _count; i++) {
-      auto newVal = problem._bounds.randomPoint();
+      auto newVal = problem.bounds().randomPoint();
       for (size_t j = 0; j < _numRepetitions; j++) {
         // TODO: Find the optimal step-size.
         auto stepSize = 1;
-        newVal -= stepSize * problem._gradient(newVal);
+        newVal -= stepSize * problem.gradient(newVal);
       }
-      if (problem._function(newVal) < problem._function(returnVal)) {
+      if (problem.function(newVal) < problem.function(returnVal)) {
         returnVal = newVal;
       }
     }
@@ -45,7 +45,7 @@ class GradientDescent: public Optimizer<Dimension, Value> {
   StochasticGradientDescent<Dimension, Value> _sgd;
 public:
   GradientDescent( size_t numRepetitions ) : _sgd(1, numRepetitions) { }
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     return _sgd.optimize(problem);
   }
 
@@ -58,8 +58,8 @@ template <size_t Dimension, typename Value = double>
 class SimulatedAnnealing: public Optimizer<Dimension, Value> {
 public:
 
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return problem._bounds.randomPoint();
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final{
+    return problem.bounds().randomPoint();
   }
 
   std::string getName() const {
@@ -73,14 +73,14 @@ class NewtonsMethod: public Optimizer<Dimension, Value> {
   size_t _numRepetitions;
 public:
   NewtonsMethod( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    auto returnVal = problem._bounds.randomPoint();
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
+    auto returnVal = problem.bounds().randomPoint();
     for (size_t i = 0; i < _count; i++) {
-      auto newVal = problem._bounds.randomPoint();
+      auto newVal = problem.bounds().randomPoint();
       for (size_t j = 0; j < _numRepetitions; j++) {
-        newVal -= problem._function(newVal) / problem._gradient(newVal);
+        newVal -= problem.function(newVal) / problem.gradient(newVal);
       }
-      if (problem._function(newVal) < problem._function(returnVal)) {
+      if (problem.function(newVal) < problem.function(returnVal)) {
         returnVal = newVal;
       }
     }
@@ -97,8 +97,8 @@ template <size_t Dimension, typename Value = double>
 class InteriorPointsMethod: public Optimizer<Dimension, Value> {
 public:
 
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return problem._bounds.randomPoint();
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
+    return problem.bounds().randomPoint();
   }
 
   std::string getName() const {
@@ -111,11 +111,11 @@ class RandomGuessing: public Optimizer<Dimension, Value> {
  size_t _count;
 public:
   RandomGuessing( size_t count ) : _count(count) { }
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    auto val = problem._bounds.randomPoint();
+  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final{
+    auto val = problem.bounds().randomPoint();
     for(size_t i=0; i<_count-1; i++){
-      auto val2 = problem._bounds.randomPoint();
-      if( problem._function( val2 ) < problem._function( val ) ) val = val2;
+      auto val2 = problem.bounds().randomPoint();
+      if( problem.function( val2 ) < problem.function( val ) ) val = val2;
     }
     return val;
   }
