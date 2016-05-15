@@ -14,9 +14,9 @@ public:
 template <size_t Dimension, typename Value = double>
 class GradientDescent: public Optimizer<Dimension, Value> {
 public:
-
+  GradientDescent( size_t numRepetitions ) : _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return problem._bounds.randomPoint();
+    return new StochasticGradientDescent<Dimension, Value>(1, _numRepetitions)->optimize(problem)
   }
 
   std::string getName() const {
@@ -27,9 +27,21 @@ public:
 template <size_t Dimension, typename Value = double>
 class StochasticGradientDescent: public Optimizer<Dimension, Value> {
 public:
-
+  StochasticGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return problem._bounds.randomPoint();
+    auto returnVal = problem._bounds.randomPoint();
+    for (size_t i = 0; i < _count; i++) {
+      auto newVal = problem._bounds.randomPoint();
+      for (size_t j = 0; j < _numRepetitions; j++) {
+        // TODO: Find the optimal step-size.
+        auto stepSize = 1;
+        newVal = newVal - stepSize * problem._gradient(newVal);
+      }
+      if (problem._function(newVal) < problem._function(returnVal)) {
+        returnVal = newVal;
+      }
+    }
+    return returnVal;
   }
 
   std::string getName() const {
@@ -53,9 +65,19 @@ public:
 template <size_t Dimension, typename Value = double>
 class NewtonsMethod: public Optimizer<Dimension, Value> {
 public:
-
+  NewtonsMethod( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override {
-    return problem._bounds.randomPoint();
+    auto returnVal = problem._bounds.randomPoint();
+    for (size_t i = 0; i < _count; i++) {
+      auto newVal = problem._bounds.randomPoint();
+      for (size_t j = 0; j < _numRepetitions; j++) {
+        newVal = newVal - problem._function(newVal) / problem._gradient(newVal);
+      }
+      if (problem._function(newVal) < problem._function(returnVal)) {
+        returnVal = newVal;
+      }
+    }
+    return returnVal;
   }
 
 public:
