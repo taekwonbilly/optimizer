@@ -21,4 +21,25 @@ public:
 
 };
 
+template <size_t Dimension=3, typename Value = double>
+class SquareMatrix : public Eigen::Matrix<Value,Dimension,Dimension> {
+public:
+  SquareMatrix( std::initializer_list<std::initializer_list<Value>> vals ) : Eigen::Matrix<Value,Dimension,Dimension>(Dimension,Dimension) {
+    assert( vals.size() == Dimension );//, "need length of init list to equal dimension" );
+    size_t i = 0;
+    for( auto& a : vals ) { 
+      size_t j = 0;
+      assert( a.size() == Dimension );
+      for( auto& b : a ) { (*this)(i,j) = b; j++; }
+      i++;
+    }
+  }
+
+  SquareMatrix( Value (vals)[Dimension][Dimension] ) : Eigen::Matrix<Value,Dimension,1>(Dimension,Dimension) {
+    for( size_t i = 0; i < Dimension; i++ )
+    for( size_t j = 0; j < Dimension; j++ )
+      (*this)(i,j) = vals[i][j];
+  }
+
+};
 #endif
