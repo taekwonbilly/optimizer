@@ -14,7 +14,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
   // The optimization methods.
   Optimizer<Dimension, Value> *opts[] = {
     new GradientDescent<Dimension, Value>(10),
-    new StochasticGradientDescent<Dimension, Value>(10, 10),
+    new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(10, 10),
     new SimulatedAnnealing<Dimension, Value>(),
     new NewtonsMethod<Dimension, Value>(1, 10),
     new InteriorPointsMethod<Dimension, Value>(),

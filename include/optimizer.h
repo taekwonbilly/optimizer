@@ -13,25 +13,37 @@ public:
 
 
 template <size_t Dimension, typename Value = double>
-class StochasticGradientDescent: public Optimizer<Dimension, Value> {
+class MultiplePointRestartAcceleratedGradientDescent: public Optimizer<Dimension, Value> {
   size_t _count;
   size_t _numRepetitions;
 public:
-  StochasticGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
+  MultiplePointRestartAcceleratedGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
-    auto returnVal = problem.bounds().randomPoint();
-    for (size_t i = 0; i < _count; i++) {
-      auto newVal = problem.bounds().randomPoint();
-      for (size_t j = 0; j < _numRepetitions; j++) {
-        // TODO: Find the optimal step-size.
-        auto stepSize = 1;
-        newVal -= stepSize * problem.gradient(newVal);
+    auto bestX = problem.bounds().randomPoint();
+    for (size_t i = 0; i < count; i++) {
+      auto x = problem.bounds().randomPoint();
+      auto y = x;
+      auto t = 1;
+      auto prevX = x;
+      auto prevY = y;
+      auto prevT = t;
+      for (size_t i = 0; i < _numRepetitions; i++) {
+        prevX = x;
+        prevY = y;
+        prevT = t;
+        x = prevY - .01 * problem.gradient(prevY);
+        t = 0.5 * prevT * (-prevT + sqrt(4 + prevT * prevT));
+        y = x + (prevT * (1 - prevT) / (prevT * prevT + t)) * (x - prevX);
+        if problem.gradient(prevY) * (x - prevX).transpose() > 0 {
+          t = 1;
+        }
       }
-      if (problem.function(newVal) < problem.function(returnVal)) {
-        returnVal = newVal;
+      if problem.function(x) < problem.function(bestX) {
+        bestX = x;
       }
     }
-    return returnVal;
+
+    return bestX;
   }
 
   std::string getName() const {
@@ -42,11 +54,11 @@ public:
 template <size_t Dimension, typename Value = double>
 class GradientDescent: public Optimizer<Dimension, Value> {
 //  size_t _numRepetitions;
-  StochasticGradientDescent<Dimension, Value> _sgd;
+  MultiplePointRestartAcceleratedGradientDescent<Dimension, Value> _mpragd;
 public:
   GradientDescent( size_t numRepetitions ) : _sgd(1, numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
-    return _sgd.optimize(problem);
+    return _mpragd.optimize(problem);
   }
 
   std::string getName() const {
