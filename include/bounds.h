@@ -3,6 +3,9 @@
 
 #include <vector.h>
 
+double randDouble() { return (double)rand() / RAND_MAX; }
+size_t randInt( size_t max ) { size_t mm = RAND_MAX / max * max; size_t tmp; do { tmp = rand(); } while( tmp >= mm ); return tmp % max; }
+
 template <size_t Dimension, typename Value = double>
 class Bounds {
   Vector<Dimension, Value> _minimum;
@@ -30,7 +33,7 @@ public:
   inline Vector<Dimension,Value> randomPoint() const { 
     Value vals[Dimension];
     for( size_t i=0; i<Dimension; i++ ) {
-      double d = (double)rand() / RAND_MAX;
+      double d = randDouble();
       vals[i] = _minimum[i] + d * (_maximum[i] - _minimum[i]);
     }
     return Vector<Dimension,Value>( vals );
