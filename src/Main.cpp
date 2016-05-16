@@ -25,7 +25,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
 
   for( int i=0; i<4; i++) 
   for( int j=0; j<4; j++) 
-opts[8+i] = new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(50*(2<<i),50*(2<<j));
+opts[8+4*i+j] = new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(50*(2<<i),50*(2<<j));
 
   for( int i=0; i<7; i++) 
   for( int j=0; j<7; j++) 
