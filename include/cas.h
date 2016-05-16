@@ -3,7 +3,8 @@
 
 #include "vector.h"
 
-#define assertR(a) assert( !isnan(a) ); return a;
+//#define assertR(a) assert( !isnan(a) ); return a;
+#define assertR(a) return a;
 
 template< size_t L=3, typename V=double >
 class Expression { 
@@ -281,7 +282,7 @@ class EFunc<SymFunction::EXP,L,V> : public Expression<L,V> {
 public:
   EFunc( const Expression<L,V>& innerA ) : inner(innerA) {}
   EFunc( const Expression<L,V>&& innerA ) : inner(innerA) {}
-  V eval( const Vector<L,V> vals ) const { return exp( inner.eval(vals) ); }
+  V eval( const Vector<L,V> vals ) const { assertR( exp( inner.eval(vals) ) ); }
   Vector<L,V> grad( const Vector<L,V> vals) const override final { return exp(inner.eval(vals))*inner.grad(vals); }
 };
 
@@ -291,7 +292,7 @@ class EFunc<SymFunction::LOG,L,V> : public Expression<L,V> {
 public:
   EFunc( const Expression<L,V>& innerA ) : inner(innerA) {}
   EFunc( const Expression<L,V>&& innerA ) : inner(innerA) {}
-  V eval( const Vector<L,V> vals ) const { return log( inner.eval(vals) ); }
+  V eval( const Vector<L,V> vals ) const { assertR( log( inner.eval(vals) ) ); }
   Vector<L,V> grad( const Vector<L,V> vals) const override final { return inner.grad(vals)/inner.eval(vals); }
 };
 
@@ -301,7 +302,7 @@ class EFunc<SymFunction::SQRT,L,V> : public Expression<L,V> {
 public:
   EFunc( const Expression<L,V>& innerA ) : inner(innerA) {}
   EFunc( const Expression<L,V>&& innerA ) : inner(innerA) {}
-  V eval( const Vector<L,V> vals ) const { return sqrt( inner.eval(vals) ); }
+  V eval( const Vector<L,V> vals ) const { assertR( sqrt( inner.eval(vals) ) ); }
   Vector<L,V> grad( const Vector<L,V> vals) const override final { return inner.grad(vals)/(2*sqrt(inner.eval(vals))); }
 };
 
