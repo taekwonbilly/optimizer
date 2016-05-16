@@ -106,7 +106,7 @@ int main (int argc, char** argv) {
      {"Rosenbrock Function", 0, {{-2.0, -1.0}, {2.0, 3.0}}, 100 * (y2 - x2 * x2) * (y2 - x2 * x2) + (x2 - 1) * (x2 - 1)},
      {"Beale's Function", 0, {{-4.0, -4.0}, {4.0, 4.0}}, (1.5 - x2 + x2 * y2) * (1.5 - x2 + x2 * y2) + (2.25 - x2 + x2 * y2 * y2) * (2.25 - x2 + x2 * y2 * y2) + (2.625 - x2 + x2 * y2 * y2 * y2) * (2.625 - x2 + x2 * y2 * y2 * y2)},
      {"Easom Function", -1, {{-5.0, -5.0}, {5.0, 5.0}}, -cos(x2) * cos(y2) * exp(-((x2 - Pi) * (x2 - Pi) + (y2 - Pi) * (y2 - Pi)))},
-     {"Eggholder Function", -959.6407, {{-400.0, 400.0}, {-400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
+     {"Eggholder Function", -959.6407, {{-400.0, -400.0}, {400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
   };
   for (auto &p : problems) {
     run_opts(p);
