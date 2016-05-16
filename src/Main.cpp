@@ -85,9 +85,7 @@ int main (int argc, char** argv) {
   // Testing setup.
   #define test_dimension 2
   #define test_value double
-  //Vector<test_dimension, test_value> v(a);
 
-  Bounds<test_dimension, test_value> test_bounds( {-5.0, -5.0}, {5.0, 5.0} );
   VarExpression<2> x2(0);
   VarExpression<2> y2(1);
 
@@ -95,11 +93,18 @@ int main (int argc, char** argv) {
   VarExpression<3> y3(1);
   VarExpression<3> z3(2);
 
-
-  const Expression<2,double>& test_function = 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)));
-
   // Runs the test case specified.
-  Problem<test_dimension, test_value> problem(test_bounds, test_function);
-  run_opts(problem);
+  Problem<test_dimension, test_value> problems[] = {
+    {"Ackley's Function", 0, {{-5.0, -5.0}, {5.0, 5.0}}, 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)))},
+    {"Sphere Function", 0, {{-2.0, 2.0}, {-2.0, 2.0}}, x2 * x2 + y2 * y2},
+    {"Rosenbrock Function", 0, {{-2.0, 2.0}, {-1.0, 3.0}}, 100 * (y2 - x2 * x2) * (y2 - x2 * x2) + (x2 - 1) * (x2 - 1)},
+    {"Beale's Function", 0, {{-4.0, 4.0}, {-4.0, 4.0}}, (1.5 - x2 + x2 * y2) * (1.5 - x2 + x2 * y2) + (2.25 - x2 + x2 * y2 * y2) * (2.25 - x2 + x2 * y2 * y2) + (2.625 - x2 + x2 * y2 * y2 * y2) * (2.625 - x2 + x2 * y2 * y2 * y2)},
+    {"Easom Function", -1, {{-5.0, 5.0}, {-5.0, 5.0}}, -cos(x2) * cos(y2) * exp(-((x2 - Pi) * (x2 - Pi) + (y2 - Pi) * (y2 - Pi)))},
+    {"Eggholder Function", -959.6407, {{-400.0, 400.0}, {-400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
+    {"Holder Table Function", -19.2085, {{-5.0, 5.0}, {-5.0, 5.0}}, -abs(sin(x2) * cos(y2) * exp(abs(1 - sqrt(x2 * x2 + y2 * y2) / Pi)))}
+  };
+  for (auto &p : problems) {
+    run_opts(p);
+  }
   return 0;
 }
