@@ -15,7 +15,7 @@ using namespace std;
 
 //! Runs all of the optimizations on a test case and prints the result.
 template <size_t Dimension, typename Value = double>
-void run_opts(const Problem<Dimension, Value> &problem) {
+void run_opts(int idx, const Problem<Dimension, Value> &problem) {
 
   // The optimization methods.
   Optimizer<Dimension, Value> *opts[8 + 16 + 7*7*7] = { 0 };
@@ -35,7 +35,7 @@ opts[16+8+7*7*i+7*j+k] = new SimulatedAnnealing<Dimension, Value>(10*(2<<i), .1/
 
   // Performs each optimization in the listed optimization methods.
   for (auto &opt : opts) {
-  printf("%s %s:\n", problem._name.c_str(), opt->getName().c_str() );
+  //printf("%s %s:\n", problem._name.c_str(), opt->getName().c_str() );
   size_t f = 0, g = 0, t = 0; double lg = 0;
   size_t NUM = 5;
   Vector<Dimension,Value> lv(0,0);
@@ -55,7 +55,8 @@ auto end = std::chrono::high_resolution_clock::now();
     g/=NUM;
     lg/=NUM;
     t/=NUM;
-    printf("{% 8d,% 8d, % 5.7f, % 16llu}\n", f, g, lg, t );// cout << lv.transpose() << "\n";
+    printf("{%d, %d, % 16llu, % 5.7f }\n", idx, opt->getType(), t, lg );
+    //printf("{% 8d,% 8d, % 5.7f, % 16llu}\n", f, g, lg, t );// cout << lv.transpose() << "\n";
   }
 
 }
@@ -108,8 +109,9 @@ int main (int argc, char** argv) {
      {"Easom Function", -1, {{-5.0, -5.0}, {5.0, 5.0}}, -cos(x2) * cos(y2) * exp(-((x2 - Pi) * (x2 - Pi) + (y2 - Pi) * (y2 - Pi)))},
      {"Eggholder Function", -959.6407, {{-400.0, -400.0}, {400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
   };
+  int i=0;
   for (auto &p : problems) {
-    run_opts(p);
+    run_opts(i, p);i++;
   }
   return 0;
 }

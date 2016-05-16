@@ -10,6 +10,7 @@ class Optimizer {
 public:
   virtual Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) =0;
   virtual std::string getName() const = 0;
+  virtual int getType() const = 0;
 };
 
 
@@ -19,6 +20,7 @@ public:
   size_t _count;
   size_t _numRepetitions;
 public:
+  int getType()const { return 0; }
   MultiplePointRestartAcceleratedGradientDescent( size_t count, size_t numRepetitions ) : _count(count), _numRepetitions(numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     auto bestX = problem.bounds().randomPoint();
@@ -61,6 +63,8 @@ class GradientDescent: public Optimizer<Dimension, Value> {
 //  size_t _numRepetitions;
   MultiplePointRestartAcceleratedGradientDescent<Dimension, Value> _mpragd;
 public:
+
+    int getType()const{ return 1; }
   GradientDescent( size_t numRepetitions ) : _mpragd(1, numRepetitions) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     return _mpragd.optimize(problem);
@@ -77,6 +81,7 @@ template <size_t Dimension, typename Value = double>
 class SimulatedAnnealing: public Optimizer<Dimension, Value> {
  double _temp, _cooling, _ftemp;
 public:
+  int getType() const { return 2; }
   SimulatedAnnealing( double temp, double cooling, double ftemp ) : _temp(temp), _cooling(cooling), _ftemp(ftemp) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
     auto val = problem.bounds().randomPoint();
@@ -136,6 +141,7 @@ template <size_t Dimension, typename Value = double>
 class RandomGuessing: public Optimizer<Dimension, Value> {
  size_t _count;
 public:
+  int getType() const { return 3; }
   RandomGuessing( size_t count ) : _count(count) { }
   Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final{
     auto val = problem.bounds().randomPoint();
