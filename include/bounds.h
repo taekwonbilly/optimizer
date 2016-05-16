@@ -2,6 +2,7 @@
 #define _BOUNDS_H_
 
 #include <vector.h>
+#include <iostream>
 
 double randDouble() { return (double)rand() / RAND_MAX; }
 size_t randInt( size_t max ) { size_t mm = RAND_MAX / max * max; size_t tmp; do { tmp = rand(); } while( tmp >= mm ); return tmp % max; }
@@ -36,6 +37,7 @@ public:
       double d = randDouble();
       vals[i] = _minimum[i] + d * (_maximum[i] - _minimum[i]);
     }
+//    std::cout << _minimum.transpose() << "|" << _maximum.transpose() << "|" << Vector<Dimension,Value>( vals ).transpose() << std::endl; 
     return Vector<Dimension,Value>( vals );
   }
 };
