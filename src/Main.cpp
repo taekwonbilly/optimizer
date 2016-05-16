@@ -18,7 +18,8 @@ template <size_t Dimension, typename Value = double>
 void run_opts(const Problem<Dimension, Value> &problem) {
 
   // The optimization methods.
-  Optimizer<Dimension, Value> *opts[8 + 7*7*7] = { 0 };
+  Optimizer<Dimension, Value> *opts[8 + 16 + 7*7*7] = { 0 };
+
   for( int i=0; i<4; i++) opts[0+i] = new GradientDescent<Dimension, Value>(100*(2<<i));
 
   for( int i=0; i<4; i++) opts[4+i] = new RandomGuessing<Dimension, Value>(100*(2<<i));
