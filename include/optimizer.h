@@ -133,19 +133,6 @@ public:
 */
 
 template <size_t Dimension, typename Value = double>
-class InteriorPointsMethod: public Optimizer<Dimension, Value> {
-public:
-
-  Vector<Dimension, Value> optimize(const Problem<Dimension, Value>&  problem) override final {
-    return problem.bounds().randomPoint();
-  }
-
-  std::string getName() const {
-    return "Interior Points Method";
-  }
-};
-
-template <size_t Dimension, typename Value = double>
 class RandomGuessing: public Optimizer<Dimension, Value> {
  size_t _count;
 public:
