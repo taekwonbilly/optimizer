@@ -41,7 +41,7 @@ public:
           t = 1;
         }
       }
-      if (problem.function(x) < problem.function(bestX)) {
+      if (problem.function(x) < problem.function(bestX) && problem.bounds().valid(x)) {
         bestX = x;
       }
     }

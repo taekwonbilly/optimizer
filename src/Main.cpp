@@ -24,13 +24,13 @@ void run_opts(const Problem<Dimension, Value> &problem) {
 
   for( int i=0; i<4; i++) opts[4+i] = new RandomGuessing<Dimension, Value>(100*(2<<i));
 
-  for( int i=0; i<4; i++) 
-  for( int j=0; j<4; j++) 
+  for( int i=0; i<4; i++)
+  for( int j=0; j<4; j++)
 opts[8+4*i+j] = new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(50*(2<<i),50*(2<<j));
 
-  for( int i=0; i<7; i++) 
-  for( int j=0; j<7; j++) 
-  for( int k=0; k<7; k++) 
+  for( int i=0; i<7; i++)
+  for( int j=0; j<7; j++)
+  for( int k=0; k<7; k++)
 opts[16+8+7*7*i+7*j+k] = new SimulatedAnnealing<Dimension, Value>(10*(2<<i), .1/(2<<j), .001/(2<<k) );
 
   // Performs each optimization in the listed optimization methods.
@@ -56,7 +56,7 @@ auto end = std::chrono::high_resolution_clock::now();
     lg/=NUM;
     t/=NUM;
     printf("{% 8d,% 8d, % 5.7f, % 16llu}\n", f, g, lg, t );// cout << lv.transpose() << "\n";
-  } 
+  }
 
 }
 
@@ -99,13 +99,14 @@ int main (int argc, char** argv) {
 
   // Runs the test case specified.
   Problem<test_dimension, test_value> problems[] = {
-    {"Sphere Function", 0, {{-2.0, -2.0}, {2.0, 2.0}}, x2 * x2 + y2 * y2},
-    {"Ackley's Function", 0, {{-5.0, -5.0}, {5.0, 5.0}}, 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)))},
-    {"Rosenbrock Function", 0, {{-2.0, -1.0}, {2.0, 3.0}}, 100 * (y2 - x2 * x2) * (y2 - x2 * x2) + (x2 - 1) * (x2 - 1)},
-    {"Beale's Function", 0, {{-4.0, -4.0}, {4.0, 4.0}}, (1.5 - x2 + x2 * y2) * (1.5 - x2 + x2 * y2) + (2.25 - x2 + x2 * y2 * y2) * (2.25 - x2 + x2 * y2 * y2) + (2.625 - x2 + x2 * y2 * y2 * y2) * (2.625 - x2 + x2 * y2 * y2 * y2)},
-    {"Easom Function", -1, {{-5.0, -5.0}, {5.0, 5.0}}, -cos(x2) * cos(y2) * exp(-((x2 - Pi) * (x2 - Pi) + (y2 - Pi) * (y2 - Pi)))},
-    {"Eggholder Function", -959.6407, {{-400.0, 400.0}, {-400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
-    {"Holder Table Function", -19.2085, {{-5.0, -5.0}, {5.0, 5.0}}, -abs(sin(x2) * cos(y2) * exp(abs(1 - sqrt(x2 * x2 + y2 * y2) / Pi)))}
+
+   {"Holder Table Function", -19.2085, {{-5.0, -5.0}, {5.0, 5.0}}, -abs(sin(x2) * cos(y2) * exp(abs(1 - sqrt(x2 * x2 + y2 * y2) / Pi)))},
+     {"Sphere Function", 0, {{-2.0, -2.0}, {2.0, 2.0}}, x2 * x2 + y2 * y2},
+     {"Ackley's Function", 0, {{-5.0, -5.0}, {5.0, 5.0}}, 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)))},
+     {"Rosenbrock Function", 0, {{-2.0, -1.0}, {2.0, 3.0}}, 100 * (y2 - x2 * x2) * (y2 - x2 * x2) + (x2 - 1) * (x2 - 1)},
+     {"Beale's Function", 0, {{-4.0, -4.0}, {4.0, 4.0}}, (1.5 - x2 + x2 * y2) * (1.5 - x2 + x2 * y2) + (2.25 - x2 + x2 * y2 * y2) * (2.25 - x2 + x2 * y2 * y2) + (2.625 - x2 + x2 * y2 * y2 * y2) * (2.625 - x2 + x2 * y2 * y2 * y2)},
+     {"Easom Function", -1, {{-5.0, -5.0}, {5.0, 5.0}}, -cos(x2) * cos(y2) * exp(-((x2 - Pi) * (x2 - Pi) + (y2 - Pi) * (y2 - Pi)))},
+     {"Eggholder Function", -959.6407, {{-400.0, 400.0}, {-400.0, 400.0}}, -(y2 + 47) * sin(sqrt(abs(x2 / 2 + y2 + 47))) - x2 * sin(sqrt(abs(x2 - y2 - 47)))},
   };
   for (auto &p : problems) {
     run_opts(p);

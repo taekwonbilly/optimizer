@@ -27,17 +27,17 @@ public:
   //! Tests if a vector is in the valid range specified by the bounds.
   inline bool valid(const Vector<Dimension, Value> &v) const {
     for (size_t idx = 0; idx < Dimension; idx++) {
-      if (v._data[idx] > _maximum._data[idx] || v._data[idx] < _minimum._data[idx]) return false;
+      if (v[idx] > _maximum[idx] || v[idx] < _minimum[idx]) return false;
     }
     return true;
   };
-  inline Vector<Dimension,Value> randomPoint() const { 
+  inline Vector<Dimension,Value> randomPoint() const {
     Value vals[Dimension];
     for( size_t i=0; i<Dimension; i++ ) {
       double d = randDouble();
       vals[i] = _minimum[i] + d * (_maximum[i] - _minimum[i]);
     }
-//    std::cout << _minimum.transpose() << "|" << _maximum.transpose() << "|" << Vector<Dimension,Value>( vals ).transpose() << std::endl; 
+//    std::cout << _minimum.transpose() << "|" << _maximum.transpose() << "|" << Vector<Dimension,Value>( vals ).transpose() << std::endl;
     return Vector<Dimension,Value>( vals );
   }
 };
