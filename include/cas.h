@@ -335,4 +335,8 @@ const Expression<L,V>& sqrt( const Expression<L,V>& val ) {
   return *(new EFunc<SymFunction::SQRT,L,V>(val));
 }
 
+template< size_t L, typename V > 
+const Expression<L,V>& abs( const Expression<L,V>& val ) {
+  return sqrt(val*val);
+}
 #endif

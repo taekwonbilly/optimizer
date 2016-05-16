@@ -2,6 +2,8 @@
 #include <vector>
 #include <algorithm>
 
+#include <chrono>
+
 #include <problem.h>
 #include <optimizer.h>
 
@@ -20,6 +22,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
     new GradientDescent<Dimension, Value>(10),
     new GradientDescent<Dimension, Value>(100),
     new GradientDescent<Dimension, Value>(1000),
+
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(10, 10),
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(10, 100),
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(10, 1000),
@@ -29,6 +32,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(1000, 10),
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(1000, 100),
     new MultiplePointRestartAcceleratedGradientDescent<Dimension, Value>(1000, 1000),
+
     new SimulatedAnnealing<Dimension, Value>(10, .1, .001),
     new SimulatedAnnealing<Dimension, Value>(10, .01, .001),
     new SimulatedAnnealing<Dimension, Value>(10, .001, .001),
@@ -50,8 +54,10 @@ void run_opts(const Problem<Dimension, Value> &problem) {
   // Performs each optimization in the listed optimization methods.
   for (auto &opt : opts) {
     problem.reset();
+auto begin = std::chrono::high_resolution_clock::now();
     auto solution = opt->optimize(problem);
-    printf("%s:\n  Calls:%8d Grad:%8d  IH:%8d    val:%2.7f\n", opt->getName().c_str(), problem.fcount, problem.gcount, problem.icount, problem.function(solution) );
+auto end = std::chrono::high_resolution_clock::now();
+    printf("%s:\n{%8d,%8d, %2.7f, %16llu}\n", opt->getName().c_str(), problem.fcount, problem.gcount, log( problem.function(solution) - problem._optimal), std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() );
 //    cout << opt->getName() << ":\n" << "Calls:" << problem.fcount << "  Grad:" << problem.gcount << "  IH:" << problem.icount << "\n     " << problem.function(solution) << " at {" << solution.transpose() << "}" << endl;
   }
 }
@@ -99,7 +105,7 @@ int main (int argc, char** argv) {
   const Expression<2,double>& test_function = 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)));
 
   // Runs the test case specified.
-  Problem<test_dimension, test_value> problem(test_bounds, test_function);
+  Problem<test_dimension, test_value> problem(0, test_bounds, test_function);
   run_opts(problem);
   return 0;
 }
