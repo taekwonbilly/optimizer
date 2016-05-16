@@ -14,23 +14,24 @@ class Problem {
   const Expression<Dimension,Value>& _function;
 //  std::function<SquareMatrix<Dimension, Value> (Vector<Dimension, Value>)> _ihessian;
 public:
+  std::string _name;
   Value _optimal;
   mutable size_t fcount;
   mutable size_t gcount;
   mutable size_t icount;
   //! Constructor for Problem class that represents an optimization problem.
-  Problem(const double optimal, const Bounds<Dimension, Value> &bounds,
+  Problem( std::string name, const double optimal, const Bounds<Dimension, Value> &bounds,
           const Expression<Dimension,Value> &function
 //          const std::function<SquareMatrix<Dimension, Value> (Vector<Dimension, Value>)> &ihessian
     )
-    : _optimal(optimal), _bounds(bounds), _function(function) {
+    : _name(name), _optimal(optimal), _bounds(bounds), _function(function) {
     fcount = gcount = icount = 0;
   }
-  Problem(const double optimal, const Bounds<Dimension, Value> &&bounds,
+  Problem( std::string name, const double optimal, const Bounds<Dimension, Value> &&bounds,
           const Expression<Dimension,Value> &function
 //          const std::function<SquareMatrix<Dimension, Value> (Vector<Dimension, Value>)> &ihessian
     )
-    : _optimal(optimal), _bounds(bounds), _function(function) {
+    : _name(name), _optimal(optimal), _bounds(bounds), _function(function) {
     fcount = gcount = icount = 0;
   }
   void reset() const { fcount = gcount = icount = 0; }
