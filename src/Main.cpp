@@ -7,6 +7,10 @@
 
 using namespace std;
 
+#define Power pow
+#define Pi 3.14159265358979323
+#define E 2.7182818284590452
+
 //! Runs all of the optimizations on a test case and prints the result.
 template <size_t Dimension, typename Value = double>
 void run_opts(const Problem<Dimension, Value> &problem) {
@@ -37,7 +41,7 @@ void run_opts(const Problem<Dimension, Value> &problem) {
     new SimulatedAnnealing<Dimension, Value>(1000, .01, .001),
     new SimulatedAnnealing<Dimension, Value>(1000, .001, .001),
     new SimulatedAnnealing<Dimension, Value>(1000, .0001, .001),
-    new NewtonsMethod<Dimension, Value>(1, 10),
+//    new NewtonsMethod<Dimension, Value>(1, 10),
     new InteriorPointsMethod<Dimension, Value>(),
     new RandomGuessing<Dimension, Value>(100),
     new RandomGuessing<Dimension, Value>(1000),
@@ -46,8 +50,10 @@ void run_opts(const Problem<Dimension, Value> &problem) {
 
   // Performs each optimization in the listed optimization methods.
   for (auto &opt : opts) {
+    problem.reset();
     auto solution = opt->optimize(problem);
-    cout << opt->getName() << " " << problem.function(solution) << " at {" << solution.transpose() << "}" << endl;
+    printf("%s:\n  Calls:%8d Grad:%8d  IH:%8d    val:%2.7f\n", opt->getName().c_str(), problem.fcount, problem.gcount, problem.icount, problem.function(solution) );
+//    cout << opt->getName() << ":\n" << "Calls:" << problem.fcount << "  Grad:" << problem.gcount << "  IH:" << problem.icount << "\n     " << problem.function(solution) << " at {" << solution.transpose() << "}" << endl;
   }
 }
 
@@ -78,26 +84,23 @@ Out[58]= "{{2, 0, 0}, {0, 6, 0}, {0, 0, 6}}"
 
 int main (int argc, char** argv) {
   // Testing setup.
-  #define test_dimension 3
+  #define test_dimension 2
   #define test_value double
   //Vector<test_dimension, test_value> v(a);
-  Bounds<test_dimension, test_value> test_bounds( Vector<>({0.0, 0.0, 0.0}), Vector<>({1.0, 1.0, 1.0}) );
-  auto test_function = [](Vector<test_dimension, test_value> v) -> test_value {
-    return (-0.3 + v[0])*(-0.3 + v[0]) + 3*((-0.5 + v[1])*(-0.5 + v[1])) + 3*((-0.7 + v[2])*(-0.7 + v[2]));
-  };
-  auto test_gradient = [](Vector<test_dimension, test_value> v) -> Vector<test_dimension, test_value> {
-    return {2*(-0.3 + v[0]), 6*(-0.5 + v[1]), 6*(-0.7 + v[2])};
-  };
-  auto test_hessian = [](Vector<test_dimension, test_value> v) -> SquareMatrix<test_dimension, test_value> {
-    return {{2, 0, 0}, {0, 6, 0}, {0, 0, 6}};
-  };
-  auto test_ihessian = [](Vector<test_dimension, test_value> v) -> SquareMatrix<test_dimension, test_value> {
-    return {{0.5, 0, 0}, {0, 0.16666666666666666, 0}, {0, 0, \
-0.16666666666666666}};
-  };
+
+  Bounds<test_dimension, test_value> test_bounds( {-5.0, -5.0}, {5.0, 5.0} );
+  VarExpression<2> x2(0);
+  VarExpression<2> y2(1);
+
+  VarExpression<3> x3(0);
+  VarExpression<3> y3(1);
+  VarExpression<3> z3(2);
+
+
+  const Expression<2,double>& test_function = 20 + E - exp((cos(2*Pi*x2) + cos(2*Pi*y2))/2.) - 20*exp(-0.2*sqrt(0.5*(x2*x2 + y2*y2)));
 
   // Runs the test case specified.
-  Problem<3, double> problem(test_bounds, test_function, test_gradient, test_hessian, test_ihessian);
+  Problem<test_dimension, test_value> problem(test_bounds, test_function);
   run_opts(problem);
   return 0;
 }

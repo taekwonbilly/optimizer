@@ -88,9 +88,9 @@ public:
       double tmp = exp( -(v2-v1)/temp);
       if( tmp >= 1 ) { val = val2; continue; }
       double rd = randDouble();
-//      if( tmp <= 1.0 ) {
-//         printf("bad=%f, v2=%f v1=%f rd=%f temp=%f\n", tmp, v2, v1, rd, temp);
-//      }
+      if(!( tmp <= 1.0 )) {
+         printf("bad=%f, v2=%f v1=%f rd=%f temp=%f\n", tmp, v2, v1, rd, temp); fflush(0);
+      }
       assert( tmp <= 1.0 );
       if( rd < tmp ) { val = val2; }
     }
@@ -104,6 +104,7 @@ public:
   }
 };
 
+/*
 template <size_t Dimension, typename Value = double>
 class NewtonsMethod: public Optimizer<Dimension, Value> {
   size_t _count;
@@ -129,6 +130,7 @@ public:
     return "Newton's Method";
   }
 };
+*/
 
 template <size_t Dimension, typename Value = double>
 class InteriorPointsMethod: public Optimizer<Dimension, Value> {
